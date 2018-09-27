@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
-	"github.com/lunny/log"
+	"log"
 	"net"
 	"os"
 	"time"
