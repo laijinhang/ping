@@ -122,7 +122,8 @@ func CheckSum(data []byte) uint16 {
 	if length == 1 {
 		sum += uint32(data[index])
 	}
-	sum += sum >> 16 // 高16位与低16位相加，如果相加之后超过16位，则去掉溢出部分，之后取反
+	sum = uint16(sum >> 16) + uint16(sum)
+	sum = uint16(sum >> 16) + uint16(sum)
 	return uint16(^sum)
 }
 
