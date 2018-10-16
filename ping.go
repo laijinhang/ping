@@ -115,15 +115,22 @@ func CheckSum(data []byte) uint16 {
 	var length = len(data)
 	var index int
 	for length > 1 { // 溢出部分直接去除
-		sum += uint32(data[index])<<8 + uint32(data[index+1])
+		sum += uint32(data[index]) << 8 + uint32(data[index+1])
 		index += 2
 		length -= 2
 	}
 	if length == 1 {
 		sum += uint32(data[index])
 	}
-	sum = uint16(sum >> 16) + uint16(sum)
-	sum = uint16(sum >> 16) + uint16(sum)
+	// CheckSum的值是16位，计算是将高16位加低16位，得到的结果进行重复以该方式进行计算，直到高16位为0
+	/*
+		sum的最大情况是：ffffffff
+		第一次高16位+低16位：ffff + ffff = 1fffe
+		第二次高16位+低16位：0001 + fffe = ffff
+		即推出一个结论，只要第一次高16位+低16位的结果，再进行之前的计算结果用到高16位+低16位，即可处理溢出情况
+	 */
+	sum = uint32(sum >> 16) + uint32(sum)
+	sum = uint32(sum >> 16) + uint32(sum)
 	return uint16(^sum)
 }
 
@@ -145,7 +152,6 @@ func Usage() {
             [-r count] [-s count] [[-j host-list] | [-k host-list]]
             [-w timeout] [-R] [-S srcaddr] [-c compartment] [-p]
             [-4] [-6] target_name
-
 选项:
     -t             Ping 指定的主机，直到停止。
                    若要查看统计信息并继续操作，请键入 Ctrl+Break；
@@ -172,7 +178,6 @@ func Usage() {
     -p             Ping Hyper-V 网络虚拟化提供程序地址。
     -4             强制使用 IPv4。
     -6             强制使用 IPv6。
-
 `)
 	}
 }
