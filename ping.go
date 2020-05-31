@@ -38,7 +38,7 @@ func main() {
 	}
 	desIp := args[len(args) - 1]
 
-	conn, err := net.DialTimeout("ip:icmp", desIp, time.Duration(timeout) * time.Millisecond)
+	conn, err := net.DialTimeout("ip4:icmp", desIp, time.Duration(timeout) * time.Millisecond)
 	if err != nil {
 		log.Fatal(err)
 	}
